@@ -27,14 +27,14 @@ let getMapInfo = function(x, y) {
     return map[getKey(x, y)];
 };
 
-let countTreesInPath = function() {
+let countTreesInPath = function(xMod, yMod) {
     let x = 0;
     let y = 0;
     let trees = 0;
     console.log("Starting tree count with max height of " + height);
     while(y < height) {
-        x += 3;
-        y += 1;
+        x += xMod;
+        y += yMod;
         if (getMapInfo(x, y).hasTree) {
             trees++;
         }
@@ -61,7 +61,7 @@ eachLine('./input.txt', function(line) {
     console.log("Finished parsing file line " + lineCount);
     lineCount++;
 }).then(function(err) {
-    console.log(countTreesInPath());
+    console.log(countTreesInPath(1, 1) * countTreesInPath(3, 1) * countTreesInPath(5, 1) * countTreesInPath(7, 1) * countTreesInPath(1, 2))
 });
 
 
