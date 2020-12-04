@@ -1,9 +1,10 @@
 const lineReader = require('line-reader');
 
-let inputMap = {}
+let inputMap = {};
 
+// Find two numbers that sum to 2020
 lineReader.eachLine('./input.txt', function(line) {
-    let numb = Number(line)
+    let numb = Number(line);
     inputMap[numb] = 1;
     let desiredNumb = 2020 - numb;
     if (inputMap.hasOwnProperty(desiredNumb)) {
