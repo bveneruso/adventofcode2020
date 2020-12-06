@@ -11,6 +11,7 @@ let parseLine = function(line) {
         set.push(line.charAt(i));
     }
 
+    // If first element, initialize list of questions, otherwise, AND starting list and current list
     saidYesTo = isFirst ? set : saidYesTo.filter(val => set.includes(val));
     isFirst = false;
 };
@@ -19,7 +20,6 @@ let parseLine = function(line) {
 eachLine('./input.txt', function(line) {
     if(line.trim().length == 0) {
         sum += saidYesTo.length;
-        saidYesTo = {};
         isFirst = true;
     } else {
         parseLine(line.trim());
