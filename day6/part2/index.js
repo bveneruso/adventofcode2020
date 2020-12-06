@@ -15,6 +15,7 @@ let parseLine = function(line, isFirstLine) {
         isFirst = false;
     } else {
 
+        // If this isn't the first element, we should invalidate any question that this entry didn't say yes to
         let keysToDelete = [];
         for (let key of Object.keys(saidYesTo)) {
             if(line.indexOf(key) == -1) {
