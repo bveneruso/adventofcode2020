@@ -5,7 +5,7 @@ let saidYesTo = {};
 
 let parseLine = function(line, isFirstLine) {
 
-    if(isFirst) {
+    if(isFirstLine) {
 
         // If first element in group, initialize said yes to char array
         for (let i = 0; i < line.length; i++) {
