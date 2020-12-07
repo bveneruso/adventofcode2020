@@ -77,9 +77,31 @@ function charAt(input, index, def) {
     return input.length > index && index >= 0 ? input.charAt(index): def;
 }
 
+/**
+ * Returns the intersection between two sets
+ * @param seta
+ * @param setb
+ * @returns A new set including only elements in both input sets
+ */
+function setIntersection(seta, setb) {
+    return new Set([...seta].filter(x => setb.has(x)));
+}
+
+/**
+ * Returns the union of two sets
+ * @param seta
+ * @param setb
+ * @returns A new set including elements in either input set
+ */
+function setUnion(seta, setb) {
+    return new Set([...seta, ...setb]);
+}
+
 module.exports = {
+    setIntersection,
     forEachChar,
     parseFile,
     forEachChunk,
-    charAt
+    charAt,
+    setUnion
 };

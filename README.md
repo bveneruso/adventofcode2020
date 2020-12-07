@@ -5,4 +5,4 @@ Each day is separated into an isolated folder to see the evolution of the soluti
 
 To run solutions, first run `npm install` from the root directory, then from the relevant part directory, run `node index.js`
 
-Common file parsing utilities are shared and can be found in `utils.js`
+Common file parsing and logic utilities are shared and can be found in `utils.js`

@@ -8,7 +8,7 @@ let parseLine = function(line, lineInFile, lineInGroup) {
     });
     if(lineInGroup == 0)
         saidYesTo = answers;
-    saidYesTo = new Set([...saidYesTo].filter(x => answers.has(x)));
+    saidYesTo = utils.setIntersection(answers, saidYesTo);
 };
 
 let sum = 0;
