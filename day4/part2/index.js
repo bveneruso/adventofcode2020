@@ -1,61 +1,36 @@
-const lineReader = require('line-reader');
-const Promise = require('bluebird');
-const eachLine = Promise.promisify(lineReader.eachLine);
+const utils = require('../../utils/utils');
 
-// This regex is painful and it makes me cry, but I was determined to get it to work with regex
-let regex = new RegExp('^(?=[\\s\\S]*byr:(?<byr>\\d{4}))(?=[\\s\\S]*iyr:(?<iyr>\\d{4}))(?=[\\s\\S]*eyr:(?<eyr>\\d{4}))(?=[\\s\\S]*hgt:(?<hgt>\\d{2,3}(in|cm)))(?=[\\s\\S]*hcl:#(?<hcl>[0-9a-f]{6}))(?=[\\s\\S]*ecl:(?<ecl>(amb|blu|brn|gry|grn|hzl|oth)))[\\s\\S]+$');
-
-// The PID check is done in a separate pass since I was doing some debugging with it
-let pidRegex = new RegExp('^(?=[\\s\\S]*pid:(?<pid>[0-9]{9}(\\s|$)))[\\s\\S]+$');
-
-let isInRange = function(number, min, max) {
-    return Number(number) >= min && Number(number) <= max;
-};
+const regexPrefix = '(^|\\s)'; // Start with whitespace or string start
+const regexPostfix = '(\\s|$)'; // End with whitepsace or string end
+const regex = [
+    'byr:((19[2-9][0-9])|(200[0-2]))', // birth year regex, beetwn 1920 and 2002
+    'iyr:((201[0-9])|2020)', // issue year, between 2010 and 2020
+    'eyr:((202[0-9])|2030)', // expiration year, between 2020 and 2030
+    'hgt:((((1[5-8][0-9])|(19[0-3]))cm)|(((59)|(6[0-9])|(7[0-6]))in))', // height, if cm, must be between 150 and 193, if in, must be between 59 and 76
+    'hcl:#([0-9a-f]{6})', // hair color, a # followed by exactly six characters 0-9 or a-f.
+    'ecl:(amb|blu|brn|gry|grn|hzl|oth)', //eye color, exactly one of: amb blu brn gry grn hzl oth
+    'pid:([0-9]{9})', //pid, a nine-digit number, including leading zeroes
+];
 
 let isValidPassport = function(input) {
     input = input.trim();
-    let match = input.match(regex);
-    if(match == null) return false;
-    let passportInfo = match.groups;
-
-    let pidMatch = input.match(pidRegex);
-    if(pidMatch == null) return false;
-
-    if(!isInRange(passportInfo.byr, 1920, 2002)) return false;
-    if(!isInRange(passportInfo.iyr, 2010, 2020)) return false;
-    if(!isInRange(passportInfo.eyr, 2020, 2030)) return false;
-    if(passportInfo.hgt.trim().endsWith('cm')) {
-        let height = Number(passportInfo.hgt.trim().replace('cm',''));
-        if(!isInRange(height, 150, 193)) return false;
-    } else if(passportInfo.hgt.trim().endsWith('in')) {
-        let height = Number(passportInfo.hgt.trim().replace('in',''));
-        if(!isInRange(height, 59, 76)) return false;
-    } else {
-        return false;
+    for(let r of regex) {
+        if(input.match(new RegExp(`${regexPrefix}${r}${regexPostfix}`)) == null) {
+            return false;
+        }
     }
-
-
     return true;
 };
 
 let validCount = 0;
-let partialLine = '';
-eachLine('./input.txt', function(line) {
-    if(line.trim() == 0) {
-        if(isValidPassport(partialLine)) {
-            validCount++;
-        }
-        partialLine = '';
-    } else {
-        partialLine += "\n" + line.trim();
-    }
-}).then(function(err) {
-    if(isValidPassport(partialLine)) {
+utils.parseFile('./input.txt', null, function (group) {
+    if(isValidPassport(group.join(' ')))
         validCount++;
-    }
-    console.log(validCount);
+}, function() {
+    return validCount;
 });
 
+// Answer is 156
 
 
 
