@@ -1,30 +1,20 @@
-const lineReader = require('line-reader');
-const Promise = require('bluebird');
-const eachLine = Promise.promisify(lineReader.eachLine);
-let saidYesTo = {};
+const utils = require('../../utils/utils');
+let saidYesTo = new Set();
 
 let parseLine = function(line) {
-    for(let i = 0; i < line.length; i++) {
-        let char = line.charAt(i);
-        if(!saidYesTo.hasOwnProperty(char)) {
-            saidYesTo[char] = 1;
-        }
-    }
+    utils.forEachChar(line, function(char) {
+        saidYesTo.add(char);
+    });
 };
 
 let sum = 0;
-eachLine('./input.txt', function(line) {
-    if(line.trim().length == 0) {
-        sum += Object.keys(saidYesTo).length;
-        saidYesTo = {};
-    } else {
-        parseLine(line.trim());
-    }
-}).then(function(err) {
-    sum += Object.keys(saidYesTo).length;
-    console.log(sum);
+utils.parseFile('./input.txt', function(line) {
+    parseLine(line);
+}, function() {
+    sum += saidYesTo.size;
+    saidYesTo = new Set();
+}, function() {
+    return sum;
 });
 
-
-
-
+// Answer is 6437

@@ -1,34 +1,24 @@
-const lineReader = require('line-reader');
-const Promise = require('bluebird');
-const eachLine = Promise.promisify(lineReader.eachLine);
-let saidYesTo = [];
-let sum = 0;
-let isFirst = true;
+const utils = require('../../utils/utils');
+let saidYesTo = new Set();
 
-let parseLine = function(line) {
-    let set = [];
-    for (let i = 0; i < line.length; i++) {
-        set.push(line.charAt(i));
-    }
-
-    // If first element, initialize list of questions, otherwise, AND starting list and current list
-    saidYesTo = isFirst ? set : saidYesTo.filter(val => set.includes(val));
-    isFirst = false;
+let parseLine = function(line, lineInFile, lineInGroup) {
+    let answers = new Set();
+    utils.forEachChar(line, function(char) {
+        answers.add(char);
+    });
+    if(lineInGroup == 0)
+        saidYesTo = answers;
+    saidYesTo = new Set([...saidYesTo].filter(x => answers.has(x)));
 };
 
-
-eachLine('./input.txt', function(line) {
-    if(line.trim().length == 0) {
-        sum += saidYesTo.length;
-        isFirst = true;
-    } else {
-        parseLine(line.trim());
-    }
-}).then(function(err) {
-    sum += saidYesTo.length;
-    console.log(sum);
+let sum = 0;
+utils.parseFile('./input.txt', parseLine, function() {
+    sum += saidYesTo.size;
+    saidYesTo = new Set();
+}, function() {
+    return sum;
 });
 
-
+// Answer is 3229
 
 

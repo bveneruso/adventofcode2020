@@ -5,9 +5,9 @@ const eachLine = Promise.promisify(lineReader.eachLine);
 /**
  * Parses a file with common callbacks
  * @param inputFile             Name of input file
- * @param forEachLineCallback   Called for each line like callback(line, lineCount, lineInGroup)
- * @param groupEndCallback      Function to call when a group (defined by consecutive lines of text with new lines) ends
- * @param onFinishCallback      Function to call once all lines have been read
+ * @param forEachLineCallback   callback(line, lineCount, lineInGroup)
+ * @param groupEndCallback      callback(group) where group is an array of trimmed lines in the group
+ * @param onFinishCallback      callback()
  */
 function parseFile(inputFile, forEachLineCallback, groupEndCallback, onFinishCallback) {
     let group = [];
