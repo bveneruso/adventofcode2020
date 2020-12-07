@@ -36,9 +36,8 @@ let getContents = function(bagColor, qty) {
     }
 
     let myContents = {};
-    Object.assign(myContents, bagContents[bagColor]);
-    for(let key of Object.keys(myContents)) {
-        myContents[key] *= qty;
+    for(let [key, val] of Object.entries(bagContents[bagColor])) {
+        myContents[key] = val * qty;
     }
 
     return myContents;
