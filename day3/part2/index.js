@@ -33,8 +33,7 @@ utils.parseFile('./input.txt', function(line, y) {
         };
     });
 }, null, function() {
-    return countTreesInPath(3, 1);
+    return countTreesInPath(1, 1) * countTreesInPath(3, 1) * countTreesInPath(5, 1) * countTreesInPath(7, 1) * countTreesInPath(1, 2);
 });
 
-// Answer is 218
-
+// Answer is 3847183340
