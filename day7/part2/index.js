@@ -3,55 +3,43 @@ const regex = new RegExp('\\d \\S* \\S*', 'g');
 
 let bagMap = {}; // where each element points to a map of contained bag colors to numbers
 
-let handleEachLine = function(line, lineCount, lineInGroup) {
+let handleEachLine = function(line) {
     let bagHas = {};
-    let split = line.split(' ');
-    let sourceBag = split[0] + ' ' + split[1];
+    let [pattern, color] = line.split(' ');
     let results = line.match(regex);
     if(results === null) return;
     for(let sub of results) {
-        split = sub.split(' ');
-        let numb = Number(split[0]);
-        let destBag = split[1] + ' ' + split[2];
-        bagHas[destBag] = numb;
+        let [numb, subPattern, subColor] = sub.split(' ');
+        bagHas[`${subPattern} ${subColor}`] = Number(numb);
     }
-    bagMap[sourceBag] = bagHas;
+    bagMap[`${pattern} ${color}`] = bagHas;
 };
 
 let getContents = function(bagColor, qty) {
     let contents = {};
     let has = bagMap[bagColor];
-    if(Object.keys(has).length > 0) {
-        for(let key in has) {
-            if(!contents.hasOwnProperty(key)) contents[key] = 0;
-            contents[key] += qty * has[key];
-            if(bagMap.hasOwnProperty(key)) {
-                let subContents = getContents(key, has[key] * qty);
-                for(let key of Object.keys(subContents)) {
-                    if(!contents.hasOwnProperty(key)) contents[key] = 0;
-                    contents[key] += subContents[key];
-                }
+
+    for(let key in has) {
+        if(!contents.hasOwnProperty(key)) contents[key] = 0;
+        contents[key] += qty * has[key];
+        if(bagMap.hasOwnProperty(key)) {
+            let subContents = getContents(key, has[key] * qty);
+            for(let key in subContents) {
+                if(!contents.hasOwnProperty(key)) contents[key] = 0;
+                contents[key] += subContents[key];
             }
         }
-        return contents;
-    } else {
-        return contents;
     }
+    return contents;
 };
 
-utils.parseFile('./input.txt', function(line) {
-    handleEachLine(line);
-}, null, function() {
-    let contents = getContents('shiny gold', 1);
-
-    console.log(JSON.stringify(contents));
+utils.parseFile('./input.txt', handleEachLine, null, function() {
     let sum = 0;
-    for(let key of Object.keys(contents)) {
-        console.log()
-        sum += contents[key];
+    for(let val of Object.values(getContents('shiny gold', 1))) {
+        sum += val;
     }
     return sum;
 });
 
-//321 is not right
+//answer is 1469
 
