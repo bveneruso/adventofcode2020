@@ -3,7 +3,6 @@ const Promise = require('bluebird');
 const eachLine = Promise.promisify(lineReader.eachLine);
 
 let getSeatId = function(boardingPass, rows, columns) {
-    console.log
     let minRow = 0;
     let maxRow = rows - 1;
     let minCol = 0;
